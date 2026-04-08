@@ -3,3 +3,8 @@ __pycache__/
 .pytest_cache/
 allure-results/
 *.pyc
+
+
+allure-results/
+test-results.json
+QA_Automation_Report.html

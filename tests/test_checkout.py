@@ -11,7 +11,7 @@ from utils.shoping_order import Shopping_stg, Shoppin_Order
 from config import standard_user,standard_user_pw,locked_out_user,locked_out_user_pw
 
 
-
+@allure.epic("Checkout 기능")
 
 
 class Test_checkout:
