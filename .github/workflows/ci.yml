@@ -34,14 +34,14 @@ jobs:
         run: python reporting/generate_report.py --no-browser
 
       - name: Upload Allure results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: allure-results
           path: allure-results/
 
       - name: Upload HTML report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: qa-report
