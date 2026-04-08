@@ -51,27 +51,23 @@ playwright-e2e-framework/
 ```mermaid
 flowchart TD
     subgraph CI["GitHub Actions CI"]
-        A[Push to main] --> B[pytest 실행]
-        B --> C[Allure 결과 수집]
-        C --> D[커스텀 HTML 리포트 생성]
+        A[Push to main] --> B[pytest]
+        B --> C[Allure 수집]
+        C --> D[HTML 리포트 생성]
         D --> E[Artifacts 업로드]
     end
 
     subgraph Framework["Test Framework"]
-        F[conftest.py\nFixture 관리] --> G[test_login.py\n로그인 TC x4]
-        F --> H[test_e2e_shopping.py\nE2E 플로우 TC x3]
-        F --> I[test_checkout.py\n결제 TC x1]
-        J[OrderBuilder\ndata_builder 패턴] --> I
+        F[conftest.py] --> G[test_login.py - 4개]
+        F --> H[test_e2e_shopping.py - 3개]
+        F --> I[test_checkout.py - 1개]
+        J[OrderBuilder] --> I
     end
 
     subgraph Layers["레이어 구조"]
-        K[tests/\n테스트 코드]
-        L[utils/\n공통 함수]
-        M[locators/\n셀렉터 관리]
-        N[config.py\n계정 정보]
-        K --> L
-        K --> M
-        K --> N
+        K[tests] --> L[utils]
+        K --> M[locators]
+        K --> N[config.py]
     end
 ```
 
