@@ -80,14 +80,18 @@ flowchart TD
 셀렉터를 테스트 코드와 분리하여 UI 변경 시 locator 파일만 수정하면 되는 구조입니다.
 `data-test` 속성을 우선 활용하여 스타일/기능 변경에 영향받지 않는 안정적인 셀렉터를 사용합니다.
 
-### 2. Fixture 기반 상태 관리
-테스트 목적에 따라 fixture scope를 분리합니다.
+### 2. Fixture Scope 전략
+테스트 목적에 따라 function / session scope를 의도적으로 분리하여 사용합니다. Scope 선택은 "테스트 격리"와 "실행 효율"의 트레이드오프이며, 시나리오 성격에 맞춰 판단합니다.
 
-| Fixture | Scope | 용도 |
-|---------|-------|------|
-| `e2e_page` | session | E2E 전체 플로우 — 브라우저 세션 유지 |
-| `page` | function | 일반 TC — 매 함수마다 로그인 상태로 시작 |
-| `login_page` | function | 로그인 TC — 날 것의 브라우저 |
+| Fixture | Scope | 사용 시나리오 | 선택 이유 |
+|---------|-------|-------------|---------|
+| `login_page` | function | 로그인 TC (`test_login.py`) | 각 TC가 로그인 전 상태에서 독립 시작해야 하므로 격리 우선 |
+| `page` | function | 단일 기능 TC (`test_checkout.py`) | 로그인 상태는 공유하되, 테스트 간 상태 오염 방지. 사전 조건은 ShoppingOrder로 독립 세팅 |
+| `e2e_page` | session | 연속 플로우 TC (`test_e2e_shopping.py`) | 상품 선택 → 장바구니 → 결제로 이어지는 연속 흐름을 단일 세션에서 검증. 실제 사용자의 단일 세션 경험 시뮬레이션 |
+
+**설계 의도**: 실무에서는 "독립된 기능 단위 검증"과 "연속된 사용자 프로세스 검증" 두 가지가 모두 필요합니다. 전자는 function scope + ShoppingOrder 패턴으로, 후자는 session scope로 대응합니다.
+
+**실무 적용**: LIMS 프로젝트에서도 동일한 전략을 사용합니다. 10단계 시험 워크플로우의 연속 프로세스 검증은 session scope로, 개별 단계(의뢰 검토, 결과 승인 등) 기능 검증은 function scope + exam_builder로 분리하여 운영하고 있습니다.
 
 ### 3. data_builder 패턴 (OrderBuilder)
 특정 단계부터 테스트를 시작할 수 있도록 사전 상태를 자동으로 세팅하는 패턴입니다.

@@ -2,6 +2,9 @@ from enum import IntEnum
 from playwright.sync_api import Page, expect
 
 from locators.common import CommonLocators
+from locators.inventory import InventoryLocators
+from locators.cart import CartLocators
+from locators.checkout import CheckoutLocators
 from utils.utils import attach_screenshot
 
 
@@ -18,22 +21,22 @@ class ShoppingOrder:
             self._step_complete_order(page)
 
     def _step_select_product(self, page: Page):
-        expect(page.locator("[data-test='title']")).to_have_text("Products")
+        expect(page.locator(InventoryLocators.PAGE_TITLE)).to_have_text("Products")
         expect(page.locator(CommonLocators.SLIDE_BTN)).to_be_visible()
-        page.locator("[data-test='add-to-cart-sauce-labs-backpack']").click()
+        page.locator(InventoryLocators.ADD_TO_CART_BACKPACK).click()
         expect(page.locator(CommonLocators.CART_BTN)).to_contain_text("1")
         attach_screenshot(page)
 
     def _step_complete_order(self, page: Page):
         page.locator(CommonLocators.CART_BTN).click()
-        expect(page.locator("[data-test='title']")).to_contain_text("Your Cart")
-        page.locator("[data-test='checkout']").click()
-        expect(page.locator("[data-test='title']")).to_contain_text("Checkout: Your Information")
-        page.locator("[data-test='firstName']").fill("Test")
-        page.locator("[data-test='lastName']").fill("User")
-        page.locator("[data-test='postalCode']").fill("12345")
-        page.locator("[data-test='continue']").click()
-        expect(page.locator("[data-test='title']")).to_contain_text("Checkout: Overview")
-        page.locator("[data-test='finish']").click()
-        page.locator("[data-test='back-to-products']").click()
+        expect(page.locator(InventoryLocators.PAGE_TITLE)).to_contain_text("Your Cart")
+        page.locator(CartLocators.CHECKOUT_BTN).click()
+        expect(page.locator(InventoryLocators.PAGE_TITLE)).to_contain_text("Checkout: Your Information")
+        page.locator(CheckoutLocators.FIRST_NAME).fill("Test")
+        page.locator(CheckoutLocators.LAST_NAME).fill("User")
+        page.locator(CheckoutLocators.POSTAL_CODE).fill("12345")
+        page.locator(CheckoutLocators.CONTINUE_BTN).click()
+        expect(page.locator(InventoryLocators.PAGE_TITLE)).to_contain_text("Checkout: Overview")
+        page.locator(CheckoutLocators.FINISH_BTN).click()
+        page.locator(CheckoutLocators.BACK_TO_PRODUCTS_BTN).click()
         attach_screenshot(page)
