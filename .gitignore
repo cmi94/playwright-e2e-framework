@@ -7,4 +7,8 @@ allure-results/
 
 allure-results/
 test-results.json
+
 QA_Automation_Report.html
+test-results.json
+reporting/history.json
+reporting/summary.json

@@ -35,7 +35,7 @@ playwright-e2e-framework/
 │   └── test_checkout.py        # 결제 TC - data_builder 활용 (1개)
 ├── utils/                      # 공통 유틸리티
 │   ├── utils.py                # login, attach_screenshot
-│   └── shoping_order.py        # OrderBuilder (data_builder 패턴)
+│   └── shopping_order.py       # OrderBuilder (data_builder 패턴)
 ├── reporting/                  # 리포트 생성
 │   ├── generate_report.py      # Allure JSON 파싱 + Jinja2 HTML 렌더링
 │   └── report_template.html    # 커스텀 HTML 리포트 템플릿
@@ -94,8 +94,8 @@ flowchart TD
 
 ```python
 # 장바구니 담긴 상태부터 결제 TC 시작
-builder = Shoppin_Order()
-builder.setup_stg(page, Shopping_stg.PRODUCT_SELECTED)
+builder = ShoppingOrder()
+builder.setup_to_stage(page, ShoppingStage.PRODUCT_SELECTED)
 ```
 
 `IntEnum`으로 단계를 정의하여 `>=` 비교로 순서대로 단계를 쌓는 구조입니다.
@@ -187,8 +187,6 @@ JIRA 티켓 번호를 입력하면 TC와 Playwright 스크립트를 자동으로
 - JIRA MCP 연동으로 티켓 내용 자동 파싱
 - 사내 TC 작성 규칙 기반 프롬프트 설계
 - TC + Playwright 스크립트 동시 생성
-
-> 실무 적용 스크린샷은 추후 추가 예정입니다.
 
 ---
 
