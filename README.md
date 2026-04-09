@@ -26,6 +26,7 @@
 playwright-e2e-framework/
 ├── .github/workflows/
 │   └── ci.yml                  # GitHub Actions CI
+├── docs/images/                # 실무 적용 스크린샷
 ├── locators/                   # 페이지별 셀렉터 관리
 │   ├── common.py               # 공통 셀렉터 (URL, 헤더 등)
 │   └── auth.py                 # 인증 관련 셀렉터
@@ -100,9 +101,9 @@ builder.setup_to_stage(page, ShoppingStage.PRODUCT_SELECTED)
 
 `IntEnum`으로 단계를 정의하여 `>=` 비교로 순서대로 단계를 쌓는 구조입니다.
 
-### 4. 커스텀 HTML 리포트
+### 4. 커스텀 HTML 리포트 + AI 분석
 Allure JSON 결과를 파싱하여 Jinja2 기반 커스텀 HTML 리포트를 생성합니다.
-Pass Rate, 실행 시간, Epic별 품질 지표, 트렌드 차트를 포함합니다.
+Pass Rate, 실행 시간, Epic별 품질 지표, 트렌드 차트를 포함하며 Gemini API를 활용한 배포 Go/No-Go 자동 판정 기능을 제공합니다.
 
 ---
 
@@ -174,19 +175,32 @@ allure serve allure-results
 - Playwright 기반 TC 358건, 커버리지 94%
 - 10단계 시험 워크플로우 E2E 자동화 (의뢰 → 검토 → 승인 → 접수 → 지시 → 배정 → 채취 → 결과 → 검토 → 승인)
 - 10개 고객사 환경을 JSON 기반 데이터 드리븐으로 대응
+- pytest-xdist (workers=3) 병렬 실행으로 전체 회귀 테스트 시간 단축
 
-### CI/CD 파이프라인
-- GitLab CI (Windows/PowerShell Runner) 연동
-- 배포 전 자동 회귀 테스트 수행
-- 테스트 완료 후 커스텀 HTML 리포트 자동 생성
-- JIRA 티켓 상태 자동 업데이트 연동
-- Confluence 대시보드 자동 갱신 — 매 배포마다 Pass Rate, 실행 시간, 트렌드 데이터가 Confluence 페이지에 누적
+### GitLab CI/CD 파이프라인
+6단계 파이프라인으로 배포 전 자동 품질 검증을 수행합니다.
+
+`install_deps → run_tests → generate_reports → pages → update_docs → deploy`
+
+![GitLab CI Pipeline](docs/images/gitlab_pipeline.png)
+
+### Confluence 자동 갱신
+테스트 완료 후 `update_confluence_page.py`가 실행되어 Pass Rate, 실행 시간, 트렌드 데이터가 Confluence 대시보드에 자동으로 누적됩니다.
+
+![Confluence Dashboard](docs/images/confluence_dashboard.png)
+
+### Gemini API 기반 배포 Go/No-Go 판정
+커스텀 HTML 리포트 내에서 Gemini API를 호출하여 테스트 결과를 분석합니다. 신규 실패, 지속 실패, Flaky 패턴을 종합하여 배포 적합성을 자동으로 판정합니다.
+
+![Gemini Analysis](docs/images/gemini_analysis.png)
 
 ### AI QA Code Generator
 JIRA 티켓 번호를 입력하면 TC와 Playwright 스크립트를 자동으로 생성하는 도구를 직접 개발하여 실무에 적용했습니다.
 - JIRA MCP 연동으로 티켓 내용 자동 파싱
 - 사내 TC 작성 규칙 기반 프롬프트 설계
 - TC + Playwright 스크립트 동시 생성
+
+![AI QA Generator](docs/images/ai_qa_generator.png)
 
 ---
 
