@@ -171,9 +171,9 @@ allure serve allure-results
 실무 LIMS 프로젝트에서 동일한 아키텍처 패턴을 적용하고 있습니다.
 
 ### 자동화 규모
-- Playwright 기반 TC 358건, 커버리지 94%
+- Playwright 기반 TC 390건, 커버리지 94%
 - 10단계 시험 워크플로우 E2E 자동화 (의뢰 → 검토 → 승인 → 접수 → 지시 → 배정 → 채취 → 결과 → 검토 → 승인)
-- 10개 고객사 환경을 JSON 기반 데이터 드리븐으로 대응
+- 각 고객사 환경을 JSON 기반 데이터 드리븐으로 대응
 
 ### CI/CD 파이프라인
 - GitLab CI (Windows/PowerShell Runner) 연동
