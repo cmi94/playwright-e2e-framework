@@ -1,17 +1,14 @@
-import pytest
 import allure
-import re
-import os
-from playwright.sync_api import Page, Browser, expect
+from playwright.sync_api import Page
 
-from locators.common import common_locators
+from locators.common import CommonLocators
 
 
-def login(page, username: str, password: str):
-    page.goto(common_locators.BASE_URL)
-    page.locator("[data-test=\"username\"]").fill(username)
-    page.locator("[data-test=\"password\"]").fill(password)
-    page.locator("[data-test=\"login-button\"]").click()
+def login(page: Page, username: str, password: str):
+    page.goto(CommonLocators.BASE_URL)
+    page.locator(CommonLocators.USERNAME_INPUT).fill(username)
+    page.locator(CommonLocators.PASSWORD_INPUT).fill(password)
+    page.locator(CommonLocators.LOGIN_BTN).click()
 
 
 def attach_screenshot(page: Page):
@@ -20,46 +17,3 @@ def attach_screenshot(page: Page):
         name="screenshot",
         attachment_type=allure.attachment_type.PNG
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

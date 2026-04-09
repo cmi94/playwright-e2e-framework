@@ -1,5 +1,5 @@
-class auth_locators:
+class AuthLocators:
     USERNAME = "[data-test='username']"
     PASSWORD = "[data-test='password']"
-    LOGIN_BTN ="[data-test='login-button']"
+    LOGIN_BTN = "[data-test='login-button']"
     ERROR_MSG = "[data-test='error']"
