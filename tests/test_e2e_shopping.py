@@ -29,6 +29,7 @@ E2E Shopping Flow Tests
 
 
 @allure.epic("Shopping E2E")
+@allure.feature("쇼핑 E2E 프로세스")
 class TestShoppingE2E:
 
     @allure.story("E2E")

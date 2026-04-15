@@ -10,6 +10,7 @@ from utils.shopping_order import ShoppingStage, ShoppingOrder
 
 
 @allure.epic("Checkout 기능")
+@allure.feature("Checkout 상세기능")
 class TestCheckout:
 
     @allure.story("Checkout")

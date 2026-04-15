@@ -7,6 +7,7 @@ from config import STANDARD_USER, STANDARD_USER_PW, LOCKED_OUT_USER_PW
 
 
 @allure.epic("Login 기능")
+@allure.feature("로그인 상세 기능")
 class TestLogin:
 
     @allure.story("Auth")
