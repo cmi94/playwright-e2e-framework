@@ -4,10 +4,6 @@ __pycache__/
 allure-results/
 *.pyc
 
-
-allure-results/
-test-results.json
-
 QA_Automation_Report.html
 test-results.json
 reporting/history.json
