@@ -1,10 +1,20 @@
-# playwright-e2e-framework
+# Playwright E2E Test Automation Framework
 
-![CI](https://github.com/cmi94/playwright-e2e-framework/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/cmi94/playwright-e2e-framework/actions/workflows/ci.yml/badge.svg)](https://github.com/cmi94/playwright-e2e-framework/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.13-blue)](https://python.org)
+[![Playwright](https://img.shields.io/badge/Playwright-latest-green)](https://playwright.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> Playwright E2E Test Automation Framework — SauceDemo
+> Page Object 분리, Data Builder 패턴, 커스텀 리포트 생성, CI/CD 파이프라인을 포함한 실전형 E2E 테스트 프레임워크.
+> 실무에서 검증된 아키텍처를 공개 데모 사이트(SauceDemo)에 재현했습니다.
 
-실무 LIMS 자동화 프로젝트의 아키텍처 패턴을 공개 데모 사이트(SauceDemo)에 재현한 포트폴리오입니다.
+---
+
+## 핵심 설계 원칙
+
+- **Locator 분리 관리** — UI 변경 시 테스트 코드를 건드리지 않고 locator 파일만 수정
+- **Data Builder 패턴** — 테스트 시작점을 자유롭게 설정하여 불필요한 사전 단계 반복 제거
+- **자동 리포트 파이프라인** — pytest 실행 → Allure 수집 → Jinja2 커스텀 HTML 리포트 자동 생성
 
 ---
 
@@ -26,7 +36,7 @@
 playwright-e2e-framework/
 ├── .github/workflows/
 │   └── ci.yml                  # GitHub Actions CI
-├── docs/images/                # 실무 적용 스크린샷
+├── docs/images/                # 아키텍처/파이프라인 스크린샷
 ├── locators/                   # 페이지별 셀렉터 관리
 │   ├── common.py               # 공통 셀렉터 (URL, 헤더 등)
 │   └── auth.py                 # 인증 관련 셀렉터
@@ -36,7 +46,7 @@ playwright-e2e-framework/
 │   └── test_checkout.py        # 결제 TC - data_builder 활용 (1개)
 ├── utils/                      # 공통 유틸리티
 │   ├── utils.py                # login, attach_screenshot
-│   └── shopping_order.py       # OrderBuilder (data_builder 패턴)
+│   └── shopping_order.py       # ShoppingOrder (data_builder 패턴)
 ├── reporting/                  # 리포트 생성
 │   ├── generate_report.py      # Allure JSON 파싱 + Jinja2 HTML 렌더링
 │   └── report_template.html    # 커스텀 HTML 리포트 템플릿
@@ -62,7 +72,7 @@ flowchart TD
         F[conftest.py] --> G[test_login.py - 4개]
         F --> H[test_e2e_shopping.py - 3개]
         F --> I[test_checkout.py - 1개]
-        J[OrderBuilder] --> I
+        J[ShoppingOrder] --> I
     end
 
     subgraph Layers["레이어 구조"]
@@ -91,16 +101,14 @@ flowchart TD
 
 **설계 의도**: 실무에서는 "독립된 기능 단위 검증"과 "연속된 사용자 프로세스 검증" 두 가지가 모두 필요합니다. 전자는 function scope + ShoppingOrder 패턴으로, 후자는 session scope로 대응합니다.
 
-**실무 적용**: LIMS 프로젝트에서도 동일한 전략을 사용합니다. 10단계 시험 워크플로우의 연속 프로세스 검증은 session scope로, 개별 단계(의뢰 검토, 결과 승인 등) 기능 검증은 function scope + exam_builder로 분리하여 운영하고 있습니다.
-
-### 3. data_builder 패턴 (OrderBuilder)
+### 3. data_builder 패턴 (ShoppingOrder)
 특정 단계부터 테스트를 시작할 수 있도록 사전 상태를 자동으로 세팅하는 패턴입니다.
-실무 LIMS 프로젝트의 10단계 시험 워크플로우 세팅 패턴을 동일한 구조로 재현했습니다.
+엔터프라이즈 웹 애플리케이션의 다단계 업무 워크플로우 세팅 패턴을 동일한 구조로 재현했습니다.
 
 ```python
 # 장바구니 담긴 상태부터 결제 TC 시작
 builder = ShoppingOrder()
-builder.setup_to_stage(page, ShoppingStage.PRODUCT_SELECTED)
+builder.setup_stage(page, ShoppingStage.PRODUCT_SELECTED)
 ```
 
 `IntEnum`으로 단계를 정의하여 `>=` 비교로 순서대로 단계를 쌓는 구조입니다.
@@ -171,13 +179,13 @@ allure serve allure-results
 
 ---
 
-## 실무 적용 사례
+## 실전 적용 규모
 
-실무 LIMS 프로젝트에서 동일한 아키텍처 패턴을 적용하고 있습니다.
+엔터프라이즈 웹 애플리케이션에서 동일한 아키텍처 패턴을 적용하고 있습니다.
 
 ### 자동화 규모
 - Playwright 기반 TC 358건, 커버리지 94%
-- 10단계 시험 워크플로우 E2E 자동화 (의뢰 → 검토 → 승인 → 접수 → 지시 → 배정 → 채취 → 결과 → 검토 → 승인)
+- 다단계 업무 워크플로우 E2E 자동화
 - 10개 고객사 환경을 JSON 기반 데이터 드리븐으로 대응
 - pytest-xdist (workers=3) 병렬 실행으로 전체 회귀 테스트 시간 단축
 
@@ -198,11 +206,14 @@ allure serve allure-results
 
 ![Gemini Analysis](docs/images/gemini_analysis.png)
 
-### AI QA Code Generator
-JIRA 티켓 번호를 입력하면 TC와 Playwright 스크립트를 자동으로 생성하는 도구를 직접 개발하여 실무에 적용했습니다.
-- JIRA MCP 연동으로 티켓 내용 자동 파싱
-- 사내 TC 작성 규칙 기반 프롬프트 설계
-- TC + Playwright 스크립트 동시 생성
+---
+
+## 관련 프로젝트
+
+| 프로젝트 | 설명 |
+|---------|------|
+| [agent-workbench](https://github.com/cmi94/agent-workbench) | AI 서브에이전트 기반 QA 자동화 허브 — 이 프레임워크의 테스트를 자율 실행 |
+| AI QA Code Generator | JIRA 티켓 → TC + Playwright 스크립트 자동 생성 도구 (v1.1). JIRA MCP 연동으로 티켓 내용을 파싱하고, 사내 TC 작성 규칙 기반 프롬프트로 TC + Playwright 스크립트를 동시 생성 |
 
 ![AI QA Generator](docs/images/ai_qa_generator.png)
 
@@ -210,4 +221,4 @@ JIRA 티켓 번호를 입력하면 TC와 Playwright 스크립트를 자동으로
 
 ## Contact
 
-- GitHub: [cmi94](https://github.com/cmi94)
+- GitHub: [@cmi94](https://github.com/cmi94)
